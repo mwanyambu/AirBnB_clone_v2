@@ -7,7 +7,7 @@ then
 fi
 sudo mkdir -p /data/web_static/releases/test
 sudo mkdir -p /data/web_static/shared
-sudo echo " Test file for nginx configuration." > /data/web_static/releases/test/index.html
+echo " Test file for nginx configuration." > /data/web_static/releases/test/index.html
 sudo ln -sf /data/web_static/releases/test/ /data/web_static/current
 sudo chown -R ubuntu:ubuntu /data/
 
