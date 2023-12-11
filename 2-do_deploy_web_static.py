@@ -4,7 +4,8 @@
 script generates a .tgz archive from contents of web_static dir
 """
 from datetime import datetime
-from fabric.api import local
+from fabric.api import *
+from fabric.operations import run, put
 import os
 
 def do_pack():
