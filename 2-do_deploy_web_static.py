@@ -11,14 +11,17 @@ def do_pack():
     """
     creates a .tgz archive
     """
-    local("mkdir -p versions")
-    now = datetime.now().strftime("%Y%m%d%H%M%S")
-    archive_name = "versions/web_static_{}.tgz".format(now)
-    arch = local("tar -cvzf {} web_static".format(archive_name)
-    if arch.return_code != 0:
+    try:
+        local("mkdir -p versions")
+        now = datetime.now().strftime("%Y%m%d%H%M%S")
+        archive_name = "versions/web_static_{}.tgz".format(now)
+        local("tar -cvzf {} web_static".format(archive_name))
+        if os.path.exists(archive_name):
+            return archive_name
+        else:
+            return None
+    except Exception:
         return None
-    else:
-        return arch
 
 def do_deploy(archive_path):
     """
