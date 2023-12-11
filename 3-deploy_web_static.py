@@ -5,33 +5,34 @@ script generates a .tgz archive from contents of web_static dir
 """
 from datetime import datetime
 from fabric.api import *
-from afbric.operations import run, put
+from fabric.operations import run, put
 import os
 
-env.hosts = ['52.205.85.168', '52.91.157.43']
-env.user = "ubuntu"
-
 def do_deploy():
-    """
-    creats and deploys archives to web servers
+    """"
+    creates and deploys to servers
     """
     archive_path = do_pack()
     if archive_path is None:
         return False
     return do_deploy(archive_path)
 
+
 def do_pack():
     """
     creates a .tgz archive
     """
-    local("mkdir -p versions")
-    now = datetime.now().strftime("%Y%m%d%H%M%S")
-    archive_name = "versions/web_static_{}.tgz".format(now)
-    arch = local("tar -cvzf {} web_static".format(archive_name)
-    if arch.return_code != 0:
+    try:
+        local("mkdir -p versions")
+        now = datetime.now().strftime("%Y%m%d%H%M%S")
+        archive_name = "versions/web_static_{}.tgz".format(now)
+        local("tar -cvzf {} web_static".format(archive_name))
+        if os.path.exists(archive_name):
+            return archive_name
+        else:
+            return None
+    except Exception:
         return None
-    else:
-        return arch
 
 def do_deploy(archive_path):
     """
@@ -48,7 +49,7 @@ def do_deploy(archive_path):
     try:
         put(archive_path, "/tmp/{}".format(arch_name))
         run("mkdir -p {}".format(dir_path))
-        run("tar -xzf /tmp/{}".format(arch_name, dir_path))
+        run("tar -xzf /tmp/{} -C {}".format(arch_name, dir_path))
         run("rm -rf /tmp/{}".format(arch_name))
         run("mv {}web_static/* {}".format(dir_path, dir_path))
         run("rm -rf {}web_static".format(dir_path))
