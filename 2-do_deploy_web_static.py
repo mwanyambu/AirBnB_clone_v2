@@ -9,8 +9,7 @@ from fabric.operations import run, put
 import os
 
 env.hosts = ['52.205.85.168', '52.91.157.43']
-#env.user = 'ubuntu'
-#env.privkey = '~/.ssh/school'
+
 
 def do_deploy(archive_path):
     """
