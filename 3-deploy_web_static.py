@@ -10,6 +10,7 @@ import os
 
 env.hosts = ['52.205.85.168', '52.91.157.43']
 
+
 def do_pack():
     """
     creates a .tgz archive
@@ -49,6 +50,7 @@ def do_deploy(archive_path):
         return True
     except Exception:
         return False
+
 
 def deploy():
     """
