@@ -8,15 +8,7 @@ from fabric.api import *
 from fabric.operations import run, put
 import os
 
-def do_deploy():
-    """"
-    creates and deploys to servers
-    """
-    archive_path = do_pack()
-    if archive_path is None:
-        return False
-    return do_deploy(archive_path)
-
+env.hosts = ['52.205.85.168', '52.91.157.43']
 
 def do_pack():
     """
@@ -34,6 +26,7 @@ def do_pack():
     except Exception:
         return None
 
+
 def do_deploy(archive_path):
     """
     distributes archives to web servers
@@ -41,22 +34,27 @@ def do_deploy(archive_path):
     if not os.path.exists(archive_path):
         return False
 
-    arch_name = os.path.basename(archive_path)
-    dir_name = arch_name.replace(".tgz", "")
-    dir_path = "/data/web_static/releases/{}/".format(dir_name)
-    success = False
-
     try:
-        put(archive_path, "/tmp/{}".format(arch_name))
+        arch_name = archive_path.split("/")[-1]
+        dir_name = arch_name.split(".")[0]
+        dir_path = "/data/web_static/releases/"
+        put(archive_path, "/tmp/")
         run("mkdir -p {}".format(dir_path))
         run("tar -xzf /tmp/{} -C {}".format(arch_name, dir_path))
         run("rm -rf /tmp/{}".format(arch_name))
-        run("mv {}web_static/* {}".format(dir_path, dir_path))
-        run("rm -rf {}web_static".format(dir_path))
+        run("sudo mv {}web_static/* {}".format(dir_path, dir_path))
+        run("rm -rf {}{}/web_static".format(dir_path, dir_name))
         run("rm -rf /data/web_static/current")
         run("ln -s {} /data/web_static/current".format(dir_path))
-        success = True
-    
+        return True
     except Exception:
-        success = False
-    return success
+        return False
+
+def deploy():
+    """
+    full deployment
+    """
+    archive_path = do_pack()
+    if archive_path is None:
+        return False
+    return do_deploy(archive_path)
