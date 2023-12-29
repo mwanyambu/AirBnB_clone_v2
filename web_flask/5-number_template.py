@@ -2,7 +2,7 @@
 
 """script starts a flask web application"""
 
-from flask import Flask
+from flask import Flask, render_template
 
 
 app = Flask(__name__)
@@ -44,6 +44,8 @@ def number_template(n):
     """displays a html page only if n is an integer"""
     if isinstance(n, int):
         return render_template('5-number.html', num=n)
+    else:
+        return 'Invalid input: Not an integer'
 
 
 if __name__ == "__main__":
