@@ -50,16 +50,12 @@ class DBStorage:
             cls: class to query
         """
         d = {}
-        cls = cls if not isinstance(cls, str) else self.__clsdict.get(cls)
-        if cls:
-            for obj in self.__session.query(cls):
-                d["{}.{}".format(
-                    cls.__name__, obj.id
-                    )] = obj
-            return (d)
-        for k, cls in self.__clsdict.items():
-            for obj in self.__session.query(cls):
-                d["{}.{}".format(cls.__name__, obj.id)] = obj
+        for classs in __clsdict:
+            if cls is None or cls is __clsdict[classs] or cls is classs:
+                objs  = self.session.querry(__clsdict[classs]).all()
+                for obj in objs:
+                    key = obj.__class__.__name__ + '.' + obj.id
+                    d[key] = obj
         return (d)
 
     def new(self, obj):
@@ -67,13 +63,14 @@ class DBStorage:
         Arguments:
             obj: object to add
         """
-        if obj:
+        if obj and self.__session:
             self.__session.add(obj)
 
     def save(self):
         """commit all changes of current db session
         """
-        self.__session.commit()
+        if self.__session:
+            self.__session.commit()
 
     def delete(self, obj=None):
         """delete obj from current db session
@@ -86,12 +83,14 @@ class DBStorage:
     def reload(self):
         """create all tables in the database
         """
-        Base.metadata.create_all(self.__engine)
-        factory = sessionmaker(bind=self.__engine, expire_on_commit=True)
-        self.__session = scoped_session(factory)()
+        try:
+            Base.metadata.create_all(self.__engine)
+            factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
+            self.__session = scoped_session(factory)()
+        except Exception as e:
+            print(e)
 
     def close(self):
         """remove current session and roll back all unsaved transactions
         """
-        if self.__session:
-            self.__session.close()
+        self.__session.remove()
