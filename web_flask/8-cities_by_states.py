@@ -9,17 +9,17 @@ from models import *
 app = Flask(__name__)
 
 
+@app.teardown_appcontext
+def teardown(exception):
+    """remove current session"""
+    storage.close()
+
+
 @app.route('/cities_by_states', strict_slashes=False)
 def state_cities():
     """displays states with their cities"""
     states = storage.all(State).values()
     return render_template('cities_by_states.html', states=states)
-
-
-@app.teardown_appcontext
-def teardown(exception):
-    """removes current session"""
-    storage.close()
 
 
 if __name__ == "__main__":
