@@ -11,6 +11,8 @@ from models.place import Place
 from models.review import Review
 from os import environ as env
 
+__all__ = ['BaseModel', 'User', 'State', 'City', 'Amenity', 'Place', 'Review']
+
 if env.get('HBNB_TYPE_STORAGE') == 'db':
     storage = DBStorage()
 else:

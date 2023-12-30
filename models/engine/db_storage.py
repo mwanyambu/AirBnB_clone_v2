@@ -12,6 +12,16 @@ from sqlalchemy.orm import sessionmaker, scoped_session
 from os import environ as env
 
 
+classes = {
+        "User": User,
+        "State": State,
+        "City": City,
+        "Amenity": Amenity,
+        "Place": Place,
+        "Review": Review
+    }
+
+
 class DBStorage:
     """This class serializes instances for database storage
     Attributes:
@@ -21,14 +31,14 @@ class DBStorage:
     """
     __engine = None
     __session = None
-    __clsdict = {
+    """__clsdict = {
         "User": User,
         "State": State,
         "City": City,
         "Amenity": Amenity,
         "Place": Place,
         "Review": Review
-    }
+    }"""
 
     def __init__(self):
         """setup __engine
@@ -41,6 +51,7 @@ class DBStorage:
                 env['HBNB_MYSQL_DB']
             ), pool_pre_ping=True
         )
+        """self.__session = scoped_session(sessionmaker(bind=self.__engine))"""
         if env.get('HBNB_ENV') == 'test':
             Base.metadata.drop_all(self.__engine)
 
@@ -50,9 +61,9 @@ class DBStorage:
             cls: class to query
         """
         d = {}
-        for classs in __clsdict:
-            if cls is None or cls is __clsdict[classs] or cls is classs:
-                objs  = self.session.querry(__clsdict[classs]).all()
+        for classs in classes:
+            if cls is None or cls is classes[classs] or cls is classs:
+                objs  = self.__session.query(classes[classs]).all()
                 for obj in objs:
                     key = obj.__class__.__name__ + '.' + obj.id
                     d[key] = obj
@@ -93,4 +104,4 @@ class DBStorage:
     def close(self):
         """remove current session and roll back all unsaved transactions
         """
-        self.__session.remove()
+        self.__session.close()

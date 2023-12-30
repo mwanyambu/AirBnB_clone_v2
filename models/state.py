@@ -21,11 +21,8 @@ class State(BaseModel, Base):
     if env.get('HBNB_TYPE_STORAGE') != 'db':
         @property
         def cities(self):
+            from models.city import City
             """get all cities with the current state id
             from filestorage
             """
-            cty = [
-                v for k, v in models.storage.all(models.City).items()
-                if v.state_id == self.id
-            ]
-            return (cty)
+            return [city for city in models.storage.all(City).values() if city.state_id == self.id]
