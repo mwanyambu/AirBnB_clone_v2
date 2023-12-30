@@ -3,8 +3,8 @@
 """start falsk web app"""
 
 from flask import Flask, render_template
-from models import storage
 from models import *
+from models import storage
 
 app = Flask(__name__)
 
@@ -18,8 +18,8 @@ def teardown(exception):
 @app.route('/cities_by_states', strict_slashes=False)
 def state_cities():
     """displays states with their cities"""
-    states = storage.all(State).values()
-    return render_template('cities_by_states.html', states=states)
+    states = storage.all("State").values()
+    return render_template('8-cities_by_states.html', states=states)
 
 
 if __name__ == "__main__":
