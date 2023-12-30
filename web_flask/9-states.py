@@ -16,13 +16,19 @@ def teardown(exception):
 
 
 @app.route('/states', strict_slashes=False)
-@app.route('/states/<state_id>', strict_slashes=False)
-def states(state_id=None):
+def state():
+    """displays states html"""
+    states = storage.all(State)
+    return render_template('9-states.html', states=states, mode='all')
+
+
+@app.route('/states/<id>', strict_slashes=False)
+def states(id):
     """shows states"""
-    states = storage.all("State").values()
-    if state_id is not None:
-        state_id = 'State.' + state_id
-    return render_template('9-states.html', states=states, state_id=state_id)
+    for state in storage.all(State).values():
+        if state.id == id:
+            return render_template('9-states.html', states=state, mode='id')
+    return render_template('9-states.html', states=states, mode='none')
 
 
 if __name__ == "__main__":
