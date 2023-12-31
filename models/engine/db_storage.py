@@ -62,11 +62,11 @@ class DBStorage:
         """
         d = {}
         for classs in classes:
-            if cls is None or cls is classes[classs] or cls is classs:
-                objs  = self.__session.query(classes[classs]).all()
-                for obj in objs:
-                    key = obj.__class__.__name__ + '.' + obj.id
-                    d[key] = obj
+            if classs is None or cls is classes[classs] or cls is classs:
+                keyvals = self.__session.query(classes[classs]).all()
+                for keyval in keyvals:
+                    key = keyval.__class__.__name__ + '.' + keyval.id
+                    d[key] = keyval
         return (d)
 
     def new(self, obj):
