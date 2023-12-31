@@ -12,14 +12,14 @@ from sqlalchemy.orm import sessionmaker, scoped_session
 from os import environ as env
 
 
-classes = {
+"""classes = {
         "User": User,
         "State": State,
         "City": City,
         "Amenity": Amenity,
         "Place": Place,
         "Review": Review
-    }
+    }"""
 
 
 class DBStorage:
@@ -31,14 +31,14 @@ class DBStorage:
     """
     __engine = None
     __session = None
-    """__clsdict = {
+    __clsdict = {
         "User": User,
         "State": State,
         "City": City,
         "Amenity": Amenity,
         "Place": Place,
         "Review": Review
-    }"""
+    }
 
     def __init__(self):
         """setup __engine
@@ -61,13 +61,22 @@ class DBStorage:
             cls: class to query
         """
         d = {}
-        for classs in classes:
+        cls = cls if not isinstance(cls, str) else self.__clsdict.get(cls)
+        if cls:
+            for obj in self.session.query(cls):
+                d["{}.{}".format(cls.__name__, obj.id)] = obj
+            return (d)
+        for key, cls in self.__clsdict.items():
+            for obj in self.__session.query(cls):
+                d["{}.{}".format(cls.__name__, obj.id)] = obj
+        return (d)
+        """for classs in classes:
             if classs is None or cls is classes[classs] or cls is classs:
                 keyvals = self.__session.query(classes[classs]).all()
                 for keyval in keyvals:
                     key = keyval.__class__.__name__ + '.' + keyval.id
                     d[key] = keyval
-        return (d)
+        return (d)"""
 
     def new(self, obj):
         """add an object to current db session
@@ -104,4 +113,5 @@ class DBStorage:
     def close(self):
         """remove current session and roll back all unsaved transactions
         """
-        self.__session.close()
+        if self.__session:
+            self.__session.close()
