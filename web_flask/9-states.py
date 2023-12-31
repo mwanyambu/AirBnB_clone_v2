@@ -19,7 +19,7 @@ def teardown(exception):
 def state():
     """displays states html"""
     states = storage.all(State)
-    return render_template('9-states.html', state=states)
+    return render_template('9-states.html', states=states)
 
 
 @app.route('/states/<id>', strict_slashes=False)
