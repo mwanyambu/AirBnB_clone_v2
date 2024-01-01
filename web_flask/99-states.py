@@ -15,6 +15,13 @@ def teardown(exception):
     storage.close()
 
 
+"""@app.route('/states', strict_slashes=False)
+def state():
+    displays states html
+    states = storage.all(State)
+    return render_template('9-states.html', states=states)"""
+
+
 @app.route('/states', strict_slashes=False)
 @app.route('/states/<state_id>', strict_slashes=False)
 def city_states(state_id=None):
@@ -29,6 +36,15 @@ def city_states(state_id=None):
         return render_template('9-states.html', not_found=True)
     return render_template('9-states.html', states=sorted(states,
                            key=lambda state: state.name))
+
+
+"""@app.route('/states/<id>', strict_slashes=False)
+def states(id):
+    shows states
+    for state in storage.all(State).values():
+        if state.id == id:
+            return render_template('9-states.html', state=state)
+    return render_template('9-states.html')"""
 
 
 if __name__ == "__main__":
