@@ -51,7 +51,7 @@ class DBStorage:
                 env['HBNB_MYSQL_DB']
             ), pool_pre_ping=True
         )
-        """self.__session = scoped_session(sessionmaker(bind=self.__engine))"""
+        self.__session = scoped_session(sessionmaker(bind=self.__engine))
         if env.get('HBNB_ENV') == 'test':
             Base.metadata.drop_all(self.__engine)
 
